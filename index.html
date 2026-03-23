@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tourism Management System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f4;
+    }
+
+    header {
+      background: #2c3e50;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+
+    nav a {
+      color: white;
+      margin: 0 10px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    section {
+      padding: 20px;
+      margin: 10px;
+      background: white;
+      border-radius: 5px;
+    }
+
+    /* Packages Container */
+    .packages-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    /* Individual Card */
+    .card {
+      flex: 1 1 calc(33.33% - 10px);
+      box-sizing: border-box;
+      background: #ecf0f1;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 15px;
+    }
+
+    .card img {
+      width: 100%;
+      max-height: 300px;
+      height: auto;
+      object-fit: cover;
+      border-radius: 5px;
+      display: block;
+    }
+
+    /* Responsive: Medium screens */
+    @media (max-width: 900px) {
+      .card {
+        flex: 1 1 calc(50% - 10px);
+      }
+    }
+
+    /* Responsive: Small screens */
+    @media (max-width: 600px) {
+      .card {
+        flex: 1 1 100%;
+      }
+    }
+
+    form input, form select {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+    }
+
+    button {
+      background: #27ae60;
+      color: white;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    footer {
+      background: #2c3e50;
+      color: white;
+      text-align: center;
+      padding: 10px;
+    }
+
+    /* Booking Summary */
+    #booking-summary {
+      background: #dff0d8;
+      border: 1px solid #3c763d;
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 5px;
+      display: none; /* hidden initially */
+    }
+    .home-banner {
+      width: 900px;
+      height: auto;
+      display: block;
+      margin: 20px auto;
+      object-fit: cover;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+  }
+    input,
+    select,
+    button {
+      width: 100%;
+      height: 45px;
+      font-size: 16px;
+      padding: 8px 12px;
+      box-sizing: border-box;
+  }
+    .hotel-showcase {
+      display: none;
+      position: relative;
+      width: 100%;
+      height: 350px;
+      margin-top: 20px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 10px;
+      overflow: hidden;
+  }
+
+    .hotel-showcase .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+  }
+
+    .hotel-showcase h2 {
+      font-size: 32px;
+      margin: 0;
+  }
+
+    .hotel-showcase p {
+      font-size: 18px;
+      margin-top: 8px;
+      letter-spacing: 1px;
+  }
+
+  #packageShowcase {
+      height: 500px;
+      max-width: 700px;
+      margin: 20px auto;
+}
+
+    #hotelShowcase {
+      height: 500px;
+      max-width: 700px;
+      margin: 20px auto;
+}
+
+/* Home section ko relative banaya */
+#home {
+  position: relative;
+}
+
+#home h2 {
+  text-align: center;
+  font-size: 32px;
+  font-weight: bold;
+  margin: 20px 0;
+  color: #2c3e50;
+  letter-spacing: 1px;
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>BlueSky Tourism</h1>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#packages">Packages</a>
+      <a href="#contact">Contact</a>
+      <a href="admin.html">Admin</a>
+    </nav>
+  </header>
+
+  <section id="home">
+    <h2>Welcome to BlueSky Tourism</h2>
+    <img src="images/banner.jpg" alt="Tourism Banner" class="home-banner">
+  </section>
+
+  <!-- Packages Section -->
+  <section id="packages">
+    <h2>Tour Packages</h2>
+    <p>We provide the best tour packages at affordable prices.</p>
+    <div class="packages-container">
+      <div class="card">
+        <img src="images/goa.jpg" alt="Goa">
+        <h3>Goa</h3>
+        <p>3 Days / 2 Nights</p>
+        <p>Price: ₹18,000</p>
+        <button onclick="goToBooking('Goa')">View & Book</button>
+      </div>
+
+      <div class="card">
+        <img src="images/manali.jpg" alt="Manali">
+        <h3>Manali</h3>
+        <p>4 Days / 3 Nights</p>
+        <p>Price: ₹25,000</p>
+        <button onclick="goToBooking('Manali')">View & Book</button>
+      </div>
+
+      <div class="card">
+        <img src="images/delhi.jpg" alt="Delhi">
+        <h3>Delhi</h3>
+        <p>2 Days / 1 Night</p>
+        <p>Price: ₹20,000</p>
+        <button onclick="goToBooking('Delhi')">View & Book</button>
+      </div>
+
+      <div class="card">
+         <img src="images/dubai.jpg" alt="Dubai">
+         <h3>Dubai</h3>
+         <p>3 Days / 2 Nights</p>
+         <p>Price: ₹50,000</p>
+         <button onclick="goToBooking('Dubai')">View & Book</button>
+      </div>
+
+      <div class="card">
+         <img src="images/paris.jpg" alt="Paris">
+         <h3>Paris</h3>
+         <p>5 Days / 4 Nights</p>
+         <p>Price: ₹60,000</p>
+         <button onclick="goToBooking('Paris')">View & Book</button>
+      </div>
+
+      <div class="card">
+         <img src="images/newzealand.jpg" alt="New Zealand">
+         <h3>New Zealand</h3>
+         <p>6 Days / 5 Nights</p>
+         <p>Price: ₹80,000</p>
+         <button onclick="goToBooking('New Zealand')">View & Book</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact">
+    <h2>Contact Us</h2>
+    <p>Email: tourism@gmail.com</p>
+    <p>Phone: +91 9876543210</p>
+  </section>
+
+  <footer>
+    <p>© 2026 Tourism Management System</p>
+  </footer>
+
+  <script>
+const hotels = {
+  Goa: ["Taj Goa", "Sea View Resort"],
+  Manali: ["Snow Valley Hotel", "Mountain Inn"],
+  Delhi: ["The Oberoi", "Taj Palace"],
+  Dubai: ["Burj Al Arab", "Atlantis Hotel"],
+  Paris: ["Louvre Stay", "Pullman Hotel"],
+  "New Zealand": ["Lake View Lodge", "Kiwi Resort"]
+};
+
+const hotelImages = {
+  "Goa": "images/goa.jpg",
+  "Taj Goa": "images/goa-taj-exotica.jpg",
+  "Sea View Resort": "images/goa-sea-view-hotel.jpg",
+
+  "Manali": "images/manali.jpg",
+  "Snow Valley Hotel": "images/manali-snow-valley.jpg",
+  "Mountain Inn": "images/manali-mountain-inn.jpg",
+
+  "Delhi": "images/delhi.jpg",
+  "The Oberoi": "images/delhi-oberoi.jpg",
+  "Taj Palace": "images/delhi-taj-palace.jpg",
+
+  "Dubai": "images/dubai.jpg",
+  "Burj Al Arab": "images/dubai-burj-al-arab.jpg",
+  "Atlantis Hotel": "images/dubai-atlantis-hotel.jpg",
+
+  "Paris": "images/paris.jpg",
+  "Pullman Hotel": "images/paris-pullman-hotel.jpg",
+  "Louvre Stay": "images/paris-louvre-hotel.jpg",
+
+  "New Zealand": "images/newzealand.jpg",
+  "Lake View Lodge": "images/newzealand-lake-view-hotel.jpg",
+  "Kiwi Resort": "images/newzealand-beach-resort.jpg"
+};
+
+
+function loadHotels() {
+  const place = document.getElementById("package").value;
+  const hotelBox = document.getElementById("hotel");
+
+  const packageShowcase = document.getElementById("packageShowcase");
+  const hotelShowcase = document.getElementById("hotelShowcase");
+
+  // reset
+  hotelBox.innerHTML = '<option value="">Select Hotel</option>';
+  hotelShowcase.style.display = "none";
+
+  // 🔥 PACKAGE IMAGE SHOW
+  if (hotelImages[place]) {
+    packageShowcase.style.display = "block";
+    packageShowcase.style.backgroundImage =
+      "url('" + hotelImages[place] + "')";
+    document.getElementById("showPackageTitle").innerText =
+      place + " Package";
+  }
+
+  // load hotels
+  if (hotels[place]) {
+    hotels[place].forEach(hotel => {
+      const opt = document.createElement("option");
+      opt.value = hotel;
+      opt.textContent = hotel;
+      hotelBox.appendChild(opt);
+    });
+  }
+}
+
+function bookNow() {
+  const name = document.getElementById('name').value;
+  const email = document.getElementById('email').value;
+  const pack = document.getElementById('package').value;
+  const hotel = document.getElementById('hotel').value;
+
+  if(name === "" || email === "" || pack === "" || hotel === "") {
+    alert("Please fill all fields!");
+    return;
+  }
+
+  const summary = document.getElementById('booking-summary');
+  summary.innerHTML = `
+  <h3>Booking Confirmed!</h3>
+  <p><strong>Name:</strong> ${name}</p>
+  <p><strong>Email:</strong> ${email}</p>
+  <p><strong>Package:</strong> ${pack}</p>
+  <p><strong>Hotel:</strong> ${hotel}</p>
+
+  <img src="${hotelImages[hotel]}"
+       style="width:100%; max-width:400px; margin-top:15px; border-radius:8px;">
+`;
+
+  summary.style.display = "block";
+
+};
+
+document.getElementById("hotel").addEventListener("change", function () {
+
+  const hotel = this.value;
+  const pack = document.getElementById("package").value;
+  const showcase = document.getElementById("hotelShowcase");
+
+  if (hotelImages[hotel]) {
+    showcase.style.display = "block";
+    showcase.style.backgroundImage = "url('" + hotelImages[hotel] + "')";
+
+    document.getElementById("showHotelName").innerText = hotel;
+    document.getElementById("showPackageName").innerText =
+      pack + " Package";
+  }
+});
+
+function goToNextPage() {
+
+  const name = document.getElementById('name').value;
+  const email = document.getElementById('email').value;
+  const pack = document.getElementById('package').value;
+  const hotel = document.getElementById('hotel').value;
+
+  if(name === "" || email === "" || pack === "" || hotel === "") {
+    alert("Please fill all fields!");
+    return;
+  }
+
+  // send data to the next page
+    "booking-details.html" +
+    "?name=" + encodeURIComponent(name) +
+    "&email=" + encodeURIComponent(email) +
+    "&package=" + encodeURIComponent(pack) +
+    "&hotel=" + encodeURIComponent(hotel);
+
+  window.location.href = url;
+}
+function goToBooking(place) {
+  window.location.href = "booking.html?package=" + encodeURIComponent(place);
+}
+
+</script>
+</body>
+</html>

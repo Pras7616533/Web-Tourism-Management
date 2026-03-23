@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Login - BlueSky Tourism</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap");
+
+    :root {
+      --ink: #1d2b36;
+      --muted: #516173;
+      --accent: #2bb673;
+      --accent-dark: #21945d;
+      --surface: #ffffff;
+      --border: #e1e7ee;
+      --shadow: 0 18px 40px rgba(16, 29, 44, 0.12);
+      --bg-top: #0e2230;
+      --bg-bottom: #eef3f7;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Source Sans 3", "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(180deg, var(--bg-top) 0%, #203848 35%, var(--bg-bottom) 100%);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    header {
+      color: white;
+      padding: 28px 16px 40px;
+      text-align: center;
+      background: radial-gradient(circle at top, rgba(255,255,255,0.12), transparent 60%);
+    }
+
+    header h1 {
+      margin: 0;
+      font-family: "Outfit", sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      font-size: 30px;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: -20px auto 40px;
+      padding: 0 20px 30px;
+    }
+
+    .card {
+      background: var(--surface);
+      padding: 24px;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      margin-bottom: 18px;
+    }
+
+    .card h2 {
+      font-family: "Outfit", sans-serif;
+      margin-top: 0;
+    }
+
+    #loginPanel {
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px 14px;
+      margin: 8px 0;
+      font-size: 15px;
+      border-radius: 10px;
+    }
+
+    input {
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      color: var(--ink);
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(43, 182, 115, 0.18);
+    }
+
+    button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    button:hover {
+      background: var(--accent-dark);
+      transform: translateY(-1px);
+    }
+
+    button.secondary {
+      background: #304254;
+    }
+
+    button.secondary:hover {
+      background: #263546;
+    }
+
+    #loginError {
+      color: #b03a2e;
+      font-size: 14px;
+    }
+
+    #adminPanel {
+      display: none;
+    }
+
+    .action-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    #adminStatus {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 6px;
+    }
+
+    #tableWrapper {
+      margin-top: 12px;
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      min-width: 1100px;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 13px;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      max-width: 180px;
+      background: white;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      background: #f1f5f9;
+      font-weight: 600;
+      color: #243445;
+      z-index: 1;
+    }
+
+    tr:nth-child(even) td {
+      background: #fafbfc;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Admin Portal</h1>
+  </header>
+
+  <main>
+    <section id="loginPanel" class="card">
+      <h2>Login</h2>
+      <input type="text" id="adminUser" placeholder="Username" autocomplete="username">
+      <input type="password" id="adminPass" placeholder="Password" autocomplete="current-password">
+      <button type="button" onclick="handleLogin()">Login</button>
+      <div id="loginError"></div>
+    </section>
+
+    <section id="adminPanel" class="card">
+      <h2>Bookings</h2>
+      <div class="action-row">
+        <button type="button" onclick="downloadServerCsv()">Download CSV</button>
+        <button type="button" class="secondary" onclick="loadBookings()">Refresh Table</button>
+        <button type="button" class="secondary" onclick="logout()">Logout</button>
+      </div>
+      <div id="adminStatus"></div>
+      <div id="tableWrapper"></div>
+    </section>
+  </main>
+
+  <script>
+    const ADMIN_USER = "admin";
+    const ADMIN_PASS = "admin123@";
+    const SESSION_KEY = "admin_session_v1";
+
+    function handleLogin() {
+      const user = document.getElementById("adminUser").value.trim();
+      const pass = document.getElementById("adminPass").value;
+      const error = document.getElementById("loginError");
+
+      if (user === ADMIN_USER && pass === ADMIN_PASS) {
+        localStorage.setItem(SESSION_KEY, "true");
+        showAdminPanel();
+        error.textContent = "";
+      } else {
+        error.textContent = "Invalid username or password.";
+      }
+    }
+
+    function showAdminPanel() {
+      document.getElementById("loginPanel").style.display = "none";
+      document.getElementById("adminPanel").style.display = "block";
+      loadBookings();
+    }
+
+    function logout() {
+      localStorage.removeItem(SESSION_KEY);
+      document.getElementById("adminPanel").style.display = "none";
+      document.getElementById("loginPanel").style.display = "block";
+      document.getElementById("adminUser").value = "";
+      document.getElementById("adminPass").value = "";
+    }
+
+    function parseCsv(text) {
+      const rows = [];
+      let row = [];
+      let current = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const next = text[i + 1];
+
+        if (char === '"') {
+          if (inQuotes && next === '"') {
+            current += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === "," && !inQuotes) {
+          row.push(current);
+          current = "";
+        } else if ((char === "\n" || char === "\r") && !inQuotes) {
+          if (current.length > 0 || row.length > 0) {
+            row.push(current);
+            rows.push(row);
+            row = [];
+            current = "";
+          }
+        } else {
+          current += char;
+        }
+      }
+
+      if (current.length > 0 || row.length > 0) {
+        row.push(current);
+        rows.push(row);
+      }
+
+      return rows;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    async function loadBookings() {
+      const status = document.getElementById("adminStatus");
+      const wrapper = document.getElementById("tableWrapper");
+      status.textContent = "Loading...";
+
+      try {
+        const response = await fetch("data/bookings.csv", { cache: "no-store" });
+        if (!response.ok) {
+          status.textContent = "Failed to load bookings.csv.";
+          return;
+        }
+
+        const csvText = await response.text();
+        const rows = parseCsv(csvText).filter(r => r.join("").trim() !== "");
+        if (rows.length === 0) {
+          status.textContent = "No data found.";
+          wrapper.innerHTML = "";
+          return;
+        }
+
+        const headers = rows[0];
+        const dataRows = rows.slice(1);
+        let html = "<table><thead><tr>";
+        headers.forEach(h => {
+          html += `<th>${escapeHtml(h)}</th>`;
+        });
+        html += "</tr></thead><tbody>";
+
+        dataRows.forEach(rowData => {
+          html += "<tr>";
+          headers.forEach((_, idx) => {
+            const cell = rowData[idx] ? rowData[idx] : "";
+            const safe = escapeHtml(cell);
+            html += `<td title="${safe}">${safe}</td>`;
+          });
+          html += "</tr>";
+        });
+
+        html += "</tbody></table>";
+        wrapper.innerHTML = html;
+        status.textContent = "";
+      } catch (err) {
+        status.textContent = "Could not load CSV. If this is a file:// page, start node server.js and open http://localhost:3000/admin.html";
+      }
+    }
+
+    function downloadServerCsv() {
+      const link = document.createElement("a");
+      link.href = "data/bookings.csv";
+      link.download = "bookings.csv";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+
+    if (localStorage.getItem(SESSION_KEY) === "true") {
+      showAdminPanel();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,672 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Trip Details</title>
+  <style>
+    body {
+      font-family: Arial;
+      margin: 0;
+      padding: 0;
+      background-image: url("images/beach.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      min-height: 100vh;
+    }
+
+    .box, .summary-box {
+      width: 55%;
+      margin: 25px auto;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.40);
+      backdrop-filter: blur(6px);
+      border-radius: 10px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin: 6px 0;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+
+    h2, h3 {
+      color: #2c3e50;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 12px;
+      font-size: 15px;
+      background: #27ae60;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+
+    button:hover {
+      background: #219150;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .summary-box p {
+      margin: 6px 0;
+    }
+
+    .summary-box b {
+      color: #2c3e50;
+    }
+
+    .summary-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .summary-actions button.secondary {
+      background: #34495e;
+    }
+
+    #csvStatus {
+      margin-top: 8px;
+      font-size: 14px;
+      color: #2c3e50;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="box" id="bookingForm">
+  <h2>Trip Details</h2>
+
+  <p><b>Name:</b> <span id="showName"></span></p>
+  <p><b>Package:</b> <span id="showPackage"></span></p>
+  <p><b>Hotel:</b> <span id="showHotel"></span></p>
+
+  <h3>Customer Details</h3>
+  <div class="form-grid">
+    <div class="form-group">
+      <label>Mobile Number</label>
+      <input type="text" id="mobile" placeholder="Enter 10-digit Mobile Number" maxlength="10" oninput="validateMobile()">
+    </div>
+    <div class="form-group">
+      <label>Email ID</label>
+      <input type="email" id="email" placeholder="Enter Email">
+    </div>
+    <div class="form-group">
+      <label>Address</label>
+      <input type="text" id="address" placeholder="Enter Address">
+    </div>
+  </div>
+
+  <h3>Travel Details</h3>
+  <div class="form-grid">
+    <div class="form-group">
+      <label>Arrival Date</label>
+      <input type="date" id="arrival" onchange="calculateAmount()">
+    </div>
+    <div class="form-group">
+      <label>Leaving Date</label>
+      <input type="date" id="leaving" onchange="calculateAmount()">
+    </div>
+    <div class="form-group">
+      <label>Number of Guests</label>
+      <select id="guests" onchange="calculateAmount()" required>
+        <option value="">Select Guests</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Room Type</label>
+      <select id="roomType" onchange="calculateAmount()">
+        <option>Single</option>
+        <option>Double</option>
+        <option>Family</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Transport Required</label>
+      <select id="transport" onchange="calculateAmount()">
+        <option>No</option>
+        <option>Car</option>
+        <option>Train</option>
+        <option>Flight</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Food Plan</label>
+      <select id="foodPlan" onchange="calculateAmount()">
+        <option>Only Breakfast</option>
+        <option>Breakfast + Lunch</option>
+        <option>Breakfast + Dinner</option>
+        <option>All Meals</option>
+      </select>
+    </div>
+    <div class="form-group">
+  <label>Special Requirements</label>
+  <select id="specialOption" onchange="toggleSpecialBox()">
+    <option value="No">No</option>
+    <option value="Yes">Yes</option>
+  </select>
+</div>
+
+<div class="form-group" id="specialTextBox" style="display:none;">
+  <label>Enter Requirement</label>
+  <input type="text" id="specialReq" placeholder="Enter your requirement">
+</div>
+  </div>
+
+  <h3>Payment Details</h3>
+  <div class="form-grid">
+    <div class="form-group">
+      <label>Total Amount</label>
+      <input type="text" id="amount" readonly>
+    </div>
+    <div class="form-group">
+      <label>Payment Mode</label>
+      <select id="paymentMode">
+        <option>Cash</option>
+        <option>UPI</option>
+        <option>Debit / Credit Card</option>
+      </select>
+    </div>
+  </div>
+
+  <button onclick="confirmBooking()">Confirm Booking</button>
+  <div id="confirmationMessage" style="margin-top:15px; font-size:16px; color:green; font-weight:bold;"></div>
+</div>
+
+<!-- Summary Box -->
+<div class="summary-box" id="summaryBox" style="display:none;">
+  <h2>Booking Summary</h2>
+  <p><b>Name:</b> <span id="sumName"></span></p>
+  <p><b>Package:</b> <span id="sumPackage"></span></p>
+  <p><b>Hotel:</b> <span id="sumHotel"></span></p>
+  <p><b>Mobile:</b> <span id="sumMobile"></span></p>
+  <p><b>Email:</b> <span id="sumEmail"></span></p>
+  <p><b>Address:</b> <span id="sumAddress"></span></p>
+  <p><b>Arrival Date:</b> <span id="sumArrival"></span></p>
+  <p><b>Leaving Date:</b> <span id="sumLeaving"></span></p>
+  <p><b>Number of Guests:</b> <span id="sumGuests"></span></p>
+  <p><b>Room Type:</b> <span id="sumRoom"></span></p>
+  <p><b>Transport:</b> <span id="sumTransport"></span></p>
+  <p><b>Food Plan:</b> <span id="sumFood"></span></p>
+  <p><b>Special Requirements:</b> <span id="sumSpecial"></span></p>
+  <p><b>Payment Mode:</b> <span id="sumPayment"></span></p>
+  <p><b>Total Amount:</b> <span id="sumAmount"></span></p>
+
+  <div class="summary-actions">
+    <button type="button" id="downloadCsvBtn">Download CSV</button>
+    <button type="button" id="downloadPdfBtn" class="secondary">Download Receipt PDF</button>
+    <button type="button" id="clearCsvBtn" class="secondary">Clear Stored CSV</button>
+  </div>
+  <div id="csvStatus"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+  function toggleSpecialBox() {
+  const option = document.getElementById("specialOption").value;
+  const box = document.getElementById("specialTextBox");
+
+  if (option === "Yes") {
+    box.style.display = "flex";
+  } else {
+    box.style.display = "none";
+  }
+}
+  const params = new URLSearchParams(window.location.search);
+  const packageName = params.get("package");
+
+  document.getElementById("showName").innerText = params.get("name");
+  document.getElementById("showPackage").innerText = packageName;
+  document.getElementById("showHotel").innerText = params.get("hotel");
+
+  const CSV_STORAGE_KEY = "booking_csv_storage_v1";
+  const SYNC_QUEUE_KEY = "booking_sync_queue_v1";
+  let syncInProgress = false;
+  let syncTimerId = null;
+  const csvHeaders = [
+    "createdAt",
+    "name",
+    "package",
+    "hotel",
+    "mobile",
+    "email",
+    "address",
+    "arrivalDate",
+    "leavingDate",
+    "guests",
+    "roomType",
+    "transport",
+    "foodPlan",
+    "specialRequirements",
+    "paymentMode",
+    "totalAmount"
+  ];
+
+  let lastBookingData = null;
+
+  function escapeCsv(value) {
+    const safe = String(value ?? "");
+    if (safe.includes('"') || safe.includes(",") || safe.includes("\n")) {
+      return '"' + safe.replace(/"/g, '""') + '"';
+    }
+    return safe;
+  }
+
+  function saveBookingToCsv(data) {
+    const existing = localStorage.getItem(CSV_STORAGE_KEY);
+    const headerLine = csvHeaders.join(",");
+    const row = csvHeaders.map(key => escapeCsv(data[key])).join(",");
+
+    if (!existing) {
+      localStorage.setItem(CSV_STORAGE_KEY, headerLine + "\n" + row);
+      return;
+    }
+
+    const trimmed = existing.replace(/\s*$/, "");
+    localStorage.setItem(CSV_STORAGE_KEY, trimmed + "\n" + row);
+  }
+
+  function downloadCsv(silent) {
+    const csv = localStorage.getItem(CSV_STORAGE_KEY);
+    const status = document.getElementById("csvStatus");
+
+    if (!csv) {
+      if (!silent) {
+        status.style.color = "#b03a2e";
+        status.innerText = "No CSV data found. Confirm a booking first.";
+      }
+      return;
+    }
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const timestamp = new Date().toISOString().slice(0, 10);
+
+    link.href = url;
+    link.download = "bookings-" + timestamp + ".csv";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+
+    if (!silent) {
+      status.style.color = "#1e8449";
+      status.innerText = "CSV downloaded successfully.";
+    }
+  }
+
+  function clearCsv() {
+    localStorage.removeItem(CSV_STORAGE_KEY);
+    const status = document.getElementById("csvStatus");
+    status.style.color = "#1e8449";
+    status.innerText = "Stored CSV cleared.";
+  }
+
+  function downloadReceiptPdf() {
+    const status = document.getElementById("csvStatus");
+
+    if (!lastBookingData) {
+      status.style.color = "#b03a2e";
+      status.innerText = "No booking found. Confirm a booking first.";
+      return;
+    }
+
+    if (!window.jspdf || !window.jspdf.jsPDF) {
+      status.style.color = "#b03a2e";
+      status.innerText = "PDF library not loaded. Check your internet connection.";
+      return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF();
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(16);
+    pdf.text("BlueSky Tourism - Receipt", 14, 18);
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(11);
+
+    const lines = [
+      "Receipt Date: " + new Date(lastBookingData.createdAt).toLocaleString(),
+      "Name: " + lastBookingData.name,
+      "Package: " + lastBookingData.package,
+      "Hotel: " + lastBookingData.hotel,
+      "Mobile: " + lastBookingData.mobile,
+      "Email: " + lastBookingData.email,
+      "Address: " + lastBookingData.address,
+      "Arrival Date: " + lastBookingData.arrivalDate,
+      "Leaving Date: " + lastBookingData.leavingDate,
+      "Guests: " + lastBookingData.guests,
+      "Room Type: " + lastBookingData.roomType,
+      "Transport: " + lastBookingData.transport,
+      "Food Plan: " + lastBookingData.foodPlan,
+      "Special Requirements: " + lastBookingData.specialRequirements,
+      "Payment Mode: " + lastBookingData.paymentMode,
+      "Total Amount: " + (lastBookingData.totalAmount || "Rs. 0")
+    ];
+
+    let y = 30;
+    lines.forEach(line => {
+      pdf.text(line, 14, y);
+      y += 7;
+    });
+
+    pdf.save("booking-receipt.pdf");
+
+    status.style.color = "#1e8449";
+    status.innerText = "Receipt PDF downloaded.";
+  }
+
+  function getSyncQueue() {
+    try {
+      const raw = localStorage.getItem(SYNC_QUEUE_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (err) {
+      return [];
+    }
+  }
+
+  function setSyncQueue(queue) {
+    localStorage.setItem(SYNC_QUEUE_KEY, JSON.stringify(queue));
+  }
+
+  function enqueueBookingForSync(data) {
+    const queue = getSyncQueue();
+    queue.push(data);
+    setSyncQueue(queue);
+  }
+
+  function getApiEndpoints() {
+    const endpoints = ["/api/bookings"];
+    if (window.location && window.location.origin) {
+      endpoints.push(window.location.origin.replace(/\/$/, "") + "/api/bookings");
+    }
+    endpoints.push("http://localhost:3000/api/bookings");
+    endpoints.push("http://127.0.0.1:3000/api/bookings");
+    return [...new Set(endpoints)];
+  }
+
+  async function trySyncQueue() {
+    if (syncInProgress) {
+      return;
+    }
+
+    const status = document.getElementById("csvStatus");
+    const endpoints = getApiEndpoints();
+    let queue = getSyncQueue();
+
+    if (queue.length === 0) {
+      return;
+    }
+
+    syncInProgress = true;
+
+    while (queue.length > 0) {
+      const payload = queue[0];
+      let saved = false;
+
+      for (const endpoint of endpoints) {
+        try {
+          const response = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+
+          if (response.ok) {
+            saved = true;
+            break;
+          }
+        } catch (err) {
+          // Try next endpoint.
+        }
+      }
+
+      if (!saved) {
+        status.style.color = "#b03a2e";
+        status.innerText = "Server offline. Booking will sync to data/bookings.csv automatically.";
+        syncInProgress = false;
+        scheduleSyncRetry();
+        return;
+      }
+
+      queue.shift();
+      setSyncQueue(queue);
+    }
+
+    status.style.color = "#1e8449";
+    status.innerText = "Saved to data/bookings.csv and local storage.";
+    syncInProgress = false;
+  }
+
+  function scheduleSyncRetry() {
+    if (syncTimerId) {
+      return;
+    }
+    syncTimerId = setTimeout(() => {
+      syncTimerId = null;
+      trySyncQueue();
+    }, 5000);
+  }
+
+  function sendBookingToServer(data) {
+    enqueueBookingForSync(data);
+    trySyncQueue();
+  }
+
+  /* PACKAGE PRICE LIST */
+  const packagePrices = {
+    "Goa": 18000,
+    "Manali": 25000,
+    "Delhi": 20000,
+    "Dubai": 50000,
+    "Paris": 60000,
+    "New Zealand": 80000
+  };
+
+  const packageDurations = {
+    "Goa": 3,
+    "Manali": 4,
+    "Delhi": 2,
+    "Dubai": 3,
+    "Paris": 5,
+    "New Zealand": 6
+  };
+
+  /* TRANSPORT PRICE LIST */
+const transportPrices = {
+  "No": 0,
+  "Car": 2000,
+  "Train": 5000,
+  "Flight": 10000
+};
+
+/* ROOM PRICE LIST */
+const roomPrices = {
+  "Single": 0,
+  "Double": 1000,
+  "Family": 2000
+};
+
+/* FOOD PRICE LIST */
+const foodPrices = {
+  "Only Breakfast": 0,
+  "Breakfast + Lunch": 500,
+  "Breakfast + Dinner": 500,
+  "All Meals": 1000
+};
+
+  /* Automatic Total Amount Calculation */
+  function getTripDays(arrivalValue, leavingValue) {
+    if (!arrivalValue || !leavingValue) {
+      return null;
+    }
+
+    const arrivalDate = new Date(arrivalValue + "T00:00:00");
+    const leavingDate = new Date(leavingValue + "T00:00:00");
+
+    if (Number.isNaN(arrivalDate.getTime()) || Number.isNaN(leavingDate.getTime())) {
+      return null;
+    }
+
+    const msPerDay = 24 * 60 * 60 * 1000;
+    const diffDays = Math.ceil((leavingDate - arrivalDate) / msPerDay);
+
+    if (diffDays < 0) {
+      return null;
+    }
+
+    return diffDays + 1;
+  }
+
+  function calculateAmount() {
+    const guests = parseInt(document.getElementById("guests").value, 10);
+    const transport = document.getElementById("transport").value;
+    const room = document.getElementById("roomType").value;
+    const food = document.getElementById("foodPlan").value;
+    const arrival = document.getElementById("arrival").value;
+    const leaving = document.getElementById("leaving").value;
+
+    const pricePerPerson = packagePrices[packageName];
+    const durationDays = packageDurations[packageName];
+    const tripDays = getTripDays(arrival, leaving);
+    const transportCost = transportPrices[transport];
+    const roomCost = roomPrices[room];
+    const foodCost = foodPrices[food];
+
+    if (!pricePerPerson || !durationDays || !tripDays || !guests || guests < 1 || guests > 5) {
+      document.getElementById("amount").value = "";
+      return;
+    }
+
+    const basePerDay = pricePerPerson / durationDays;
+    const baseTotal = basePerDay * tripDays * guests;
+    const total = Math.round(baseTotal + transportCost + roomCost + foodCost);
+
+    document.getElementById("amount").value = "Rs " + total;
+  }
+
+  /* Mobile Validation on input */
+  function validateMobile() {
+    const mobileInput = document.getElementById("mobile");
+    mobileInput.value = mobileInput.value.replace(/[^0-9]/g, "");
+    if (mobileInput.value.length > 10) {
+      mobileInput.value = mobileInput.value.slice(0, 10);
+    }
+  }
+
+  /* Final Booking Confirmation */
+  function confirmBooking() {
+    const guests = document.getElementById("guests").value;
+    const mobile = document.getElementById("mobile").value;
+    const messageDiv = document.getElementById("confirmationMessage");
+
+    if (mobile.length !== 10) {
+      messageDiv.style.color = "red";
+      messageDiv.innerText = "❌ Please enter a valid 10-digit mobile number";
+      return;
+    }
+
+    if (guests == "" || guests < 1 || guests > 5) {
+      messageDiv.style.color = "red";
+      messageDiv.innerText = "❌ Number of guests must be between 1 and 5";
+      return;
+    }
+
+    messageDiv.style.color = "green";
+    messageDiv.innerText = "🎉 Booking Confirmed Successfully!";
+
+    // Show Summary
+    document.getElementById("summaryBox").style.display = "block";
+    document.getElementById("sumName").innerText = params.get("name");
+    document.getElementById("sumPackage").innerText = packageName;
+    document.getElementById("sumHotel").innerText = params.get("hotel");
+    document.getElementById("sumMobile").innerText = mobile;
+    document.getElementById("sumEmail").innerText = document.getElementById("email").value;
+    document.getElementById("sumAddress").innerText = document.getElementById("address").value;
+    document.getElementById("sumArrival").innerText = document.getElementById("arrival").value;
+    document.getElementById("sumLeaving").innerText = document.getElementById("leaving").value;
+    document.getElementById("sumGuests").innerText = guests;
+    document.getElementById("sumRoom").innerText = document.getElementById("roomType").value;
+    document.getElementById("sumTransport").innerText = document.getElementById("transport").value;
+    document.getElementById("sumFood").innerText = document.getElementById("foodPlan").value;
+   const specialOption = document.getElementById("specialOption").value;
+let specialText = "";
+
+if (specialOption === "Yes") {
+  specialText = document.getElementById("specialReq").value;
+  document.getElementById("sumSpecial").innerText = specialText;
+} else {
+    document.getElementById("sumSpecial").innerText = "No Special Requirements";
+}
+    document.getElementById("sumPayment").innerText = document.getElementById("paymentMode").value;
+    document.getElementById("sumAmount").innerText = document.getElementById("amount").value;
+
+    const bookingData = {
+      createdAt: new Date().toISOString(),
+      name: params.get("name"),
+      package: packageName,
+      hotel: params.get("hotel"),
+      mobile: mobile,
+      email: document.getElementById("email").value,
+      address: document.getElementById("address").value,
+      arrivalDate: document.getElementById("arrival").value,
+      leavingDate: document.getElementById("leaving").value,
+      guests: guests,
+      roomType: document.getElementById("roomType").value,
+      transport: document.getElementById("transport").value,
+      foodPlan: document.getElementById("foodPlan").value,
+      specialRequirements: specialOption === "Yes" ? document.getElementById("specialReq").value : "No",
+      paymentMode: document.getElementById("paymentMode").value,
+      totalAmount: document.getElementById("amount").value
+    };
+
+    lastBookingData = bookingData;
+    saveBookingToCsv(bookingData);
+    const status = document.getElementById("csvStatus");
+    status.style.color = "#1e8449";
+    status.innerText = "Saved to local storage. Downloading CSV...";
+
+    sendBookingToServer(bookingData);
+
+    // Scroll to summary
+    document.getElementById("summaryBox").scrollIntoView({behavior: "smooth"});
+  }
+  toggleSpecialBox();
+
+  document.getElementById("downloadCsvBtn").addEventListener("click", () => downloadCsv(false));
+  document.getElementById("clearCsvBtn").addEventListener("click", clearCsv);
+  document.getElementById("downloadPdfBtn").addEventListener("click", downloadReceiptPdf);
+  trySyncQueue();
+</script>
+
+</body>
+</html>

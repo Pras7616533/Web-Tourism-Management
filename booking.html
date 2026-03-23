@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Book Your Tour</title>
+
+<style>
+  * {
+  box-sizing: border-box;
+}
+body {
+  font-family: Arial;
+  background: #f4f4f4;
+  margin: 0;
+}
+
+header {
+  background: #2c3e50;
+  color: white;
+  padding: 15px;
+  text-align: center;
+}
+
+section {
+  background: white;
+  padding: 20px;
+  margin: 20px;
+  border-radius: 5px;
+}
+
+input, select, button {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+button {
+  background: #27ae60;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+#packageImage {
+  width: 100%;
+  max-width: 600px;
+  margin: 15px auto;
+  display: block;
+  border-radius: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>Book Your Tour</h1>
+</header>
+
+<section>
+
+  <img id="packageImage">
+
+  <form onsubmit="goToBookingDetails(event)">
+
+    <input type="text" id="name" placeholder="Your Name" required>
+
+    <input type="email" id="email" placeholder="Your Email" required>
+
+    <select id="hotel" required>
+      <option value="">Select Hotel</option>
+    </select>
+
+    <button type="submit">Confirm Booking</button>
+
+  </form>
+
+  <div id="result"></div>
+
+</section>
+
+<script>
+const hotels = {
+  Goa: ["Taj Goa", "Sea View Resort"],
+  Manali: ["Snow Valley Hotel", "Mountain Inn"],
+  Delhi: ["The Oberoi", "Taj Palace"],
+  Dubai: ["Burj Al Arab", "Atlantis Hotel"],
+  Paris: ["Louvre Stay", "Pullman Hotel"],
+  "New Zealand": ["Lake View Lodge", "Kiwi Resort"]
+};
+
+const images = {
+  Goa: "images/goa.jpg",
+  Manali: "images/manali.jpg",
+  Delhi: "images/delhi.jpg",
+  Dubai: "images/dubai.jpg",
+  Paris: "images/paris.jpg",
+  "New Zealand": "images/newzealand.jpg"
+};
+
+function goToBookingDetails(e) {
+  e.preventDefault(); // Default form submit rok do
+
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const hotel = document.getElementById("hotel").value;
+
+  // Redirect with URL params
+  const params = new URLSearchParams();
+  params.set("name", name);
+  params.set("email", email);
+  params.set("hotel", hotel);
+  params.set("package", selectedPackage); // selectedPackage tumhare code me already defined hai
+
+  window.location.href = "booking-details.html?" + params.toString();
+}
+
+const params = new URLSearchParams(window.location.search);
+const selectedPackage = params.get("package");
+
+if(selectedPackage) {
+
+  document.getElementById("packageImage").src = images[selectedPackage];
+
+  const hotelDropdown = document.getElementById("hotel");
+
+  hotels[selectedPackage].forEach(hotel => {
+    const option = document.createElement("option");
+    option.value = hotel;
+    option.textContent = hotel;
+    hotelDropdown.appendChild(option);
+  });
+}
+
+function confirmBooking(e) {
+  e.preventDefault();
+
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const hotel = document.getElementById("hotel").value;
+
+  document.getElementById("result").innerHTML =
+  `<h3>Booking Confirmed!</h3>
+   <p>Name: ${name}</p>
+   <p>Email: ${email}</p>
+   <p>Package: ${selectedPackage}</p>
+   <p>Hotel: ${hotel}</p>`;
+}
+</script>
+
+</body>
+</html>
