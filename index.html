@@ -4,186 +4,189 @@
   <meta charset="UTF-8">
   <title>Tourism Management System</title>
   <style>
+    @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap");
+
+    :root {
+      --ink: #101820;
+      --muted: #566171;
+      --accent: #1c7ed6;
+      --accent-dark: #155fa2;
+      --surface: #ffffff;
+      --surface-muted: #f6f8fb;
+      --border: #e1e7ef;
+      --shadow: 0 22px 45px rgba(16, 24, 40, 0.14);
+      --bg-top: #0f2634;
+      --bg-mid: #0f3e4a;
+      --bg-bottom: #eef2f6;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
-      background: #f4f4f4;
+      font-family: "Source Sans 3", "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 40%, var(--bg-bottom) 100%);
+      min-height: 100vh;
     }
 
     header {
-      background: #2c3e50;
       color: white;
-      padding: 15px;
+      padding: 28px 16px 42px;
       text-align: center;
+      background: radial-gradient(circle at top, rgba(255, 255, 255, 0.16), transparent 60%);
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      font-family: "Outfit", sans-serif;
+      letter-spacing: 0.6px;
+      font-weight: 700;
+      font-size: 34px;
+    }
+
+    nav {
+      display: inline-flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
     nav a {
       color: white;
-      margin: 0 10px;
       text-decoration: none;
-      font-weight: bold;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    nav a:hover {
+      background: rgba(255, 255, 255, 0.22);
+      transform: translateY(-1px);
     }
 
     section {
-      padding: 20px;
-      margin: 10px;
-      background: white;
-      border-radius: 5px;
+      max-width: 1100px;
+      margin: 0 auto 24px;
+      padding: 24px;
+      background: var(--surface);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
     }
 
-    /* Packages Container */
+    #home {
+      margin-top: -20px;
+    }
+
+    #home h2 {
+      text-align: center;
+      font-family: "Outfit", sans-serif;
+      font-size: 30px;
+      font-weight: 600;
+      margin: 8px 0 18px;
+      color: var(--ink);
+    }
+
+    .home-banner {
+      width: 100%;
+      max-width: 980px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      border-radius: 18px;
+      box-shadow: 0 16px 30px rgba(15, 38, 52, 0.2);
+    }
+
     .packages-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 18px;
     }
 
-    /* Individual Card */
     .card {
-      flex: 1 1 calc(33.33% - 10px);
-      box-sizing: border-box;
-      background: #ecf0f1;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      padding: 15px;
+      background: var(--surface-muted);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 8px 18px rgba(16, 24, 40, 0.08);
     }
 
     .card img {
       width: 100%;
-      max-height: 300px;
-      height: auto;
+      height: 180px;
       object-fit: cover;
-      border-radius: 5px;
-      display: block;
+      border-radius: 12px;
     }
 
-    /* Responsive: Medium screens */
-    @media (max-width: 900px) {
-      .card {
-        flex: 1 1 calc(50% - 10px);
-      }
+    .card h3 {
+      margin: 4px 0 0;
+      font-family: "Outfit", sans-serif;
+      font-size: 20px;
     }
 
-    /* Responsive: Small screens */
-    @media (max-width: 600px) {
-      .card {
-        flex: 1 1 100%;
-      }
-    }
-
-    form input, form select {
-      width: 100%;
-      padding: 10px;
-      margin: 5px 0;
+    .card p {
+      margin: 0;
+      color: var(--muted);
     }
 
     button {
-      background: #27ae60;
+      background: var(--accent);
       color: white;
-      padding: 10px;
+      padding: 12px 14px;
       border: none;
+      border-radius: 12px;
       cursor: pointer;
-      width: 100%;
+      font-weight: 600;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    button:hover {
+      background: var(--accent-dark);
+      transform: translateY(-1px);
     }
 
     footer {
-      background: #2c3e50;
-      color: white;
+      margin: 30px 0 0;
+      background: #0f2634;
+      color: #c8d2dd;
       text-align: center;
-      padding: 10px;
+      padding: 16px;
+      font-size: 14px;
     }
 
-    /* Booking Summary */
-    #booking-summary {
-      background: #dff0d8;
-      border: 1px solid #3c763d;
-      padding: 15px;
-      margin-top: 15px;
-      border-radius: 5px;
-      display: none; /* hidden initially */
-    }
-    .home-banner {
-      width: 900px;
-      height: auto;
-      display: block;
-      margin: 20px auto;
-      object-fit: cover;
+    @media (max-width: 900px) {
+      .packages-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
 
-    body {
-      font-family: Arial, sans-serif;
-  }
-    input,
-    select,
-    button {
-      width: 100%;
-      height: 45px;
-      font-size: 16px;
-      padding: 8px 12px;
-      box-sizing: border-box;
-  }
-    .hotel-showcase {
-      display: none;
-      position: relative;
-      width: 100%;
-      height: 350px;
-      margin-top: 20px;
-      background-size: cover;
-      background-position: center;
-      border-radius: 10px;
-      overflow: hidden;
-  }
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 28px;
+      }
 
-    .hotel-showcase .overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.45);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      text-align: center;
-  }
+      section {
+        margin: 0 12px 18px;
+        padding: 18px;
+      }
 
-    .hotel-showcase h2 {
-      font-size: 32px;
-      margin: 0;
-  }
+      .packages-container {
+        grid-template-columns: 1fr;
+      }
 
-    .hotel-showcase p {
-      font-size: 18px;
-      margin-top: 8px;
-      letter-spacing: 1px;
-  }
-
-  #packageShowcase {
-      height: 500px;
-      max-width: 700px;
-      margin: 20px auto;
-}
-
-    #hotelShowcase {
-      height: 500px;
-      max-width: 700px;
-      margin: 20px auto;
-}
-
-/* Home section ko relative banaya */
-#home {
-  position: relative;
-}
-
-#home h2 {
-  text-align: center;
-  font-size: 32px;
-  font-weight: bold;
-  margin: 20px 0;
-  color: #2c3e50;
-  letter-spacing: 1px;
-}
-
+      .card img {
+        height: 200px;
+      }
+    }
   </style>
 </head>
 <body>

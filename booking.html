@@ -5,50 +5,104 @@
 <title>Book Your Tour</title>
 
 <style>
+  @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap");
+
+  :root {
+    --ink: #111827;
+    --muted: #5f6b7a;
+    --accent: #1c7ed6;
+    --accent-dark: #155fa2;
+    --surface: #ffffff;
+    --border: #e3e8ef;
+    --shadow: 0 22px 45px rgba(17, 24, 39, 0.15);
+    --bg-top: #0f2634;
+    --bg-bottom: #eef2f6;
+  }
+
   * {
-  box-sizing: border-box;
-}
-body {
-  font-family: Arial;
-  background: #f4f4f4;
-  margin: 0;
-}
+    box-sizing: border-box;
+  }
 
-header {
-  background: #2c3e50;
-  color: white;
-  padding: 15px;
-  text-align: center;
-}
+  body {
+    margin: 0;
+    font-family: "Source Sans 3", "Segoe UI", sans-serif;
+    background: linear-gradient(180deg, var(--bg-top) 0%, #1a3b4e 40%, var(--bg-bottom) 100%);
+    color: var(--ink);
+    min-height: 100vh;
+  }
 
-section {
-  background: white;
-  padding: 20px;
-  margin: 20px;
-  border-radius: 5px;
-}
+  header {
+    color: white;
+    padding: 26px 16px 36px;
+    text-align: center;
+    background: radial-gradient(circle at top, rgba(255, 255, 255, 0.16), transparent 60%);
+  }
 
-input, select, button {
-  width: 100%;
-  padding: 12px;
-  margin: 8px 0;
-  font-size: 16px;
-}
+  header h1 {
+    margin: 0;
+    font-family: "Outfit", sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    font-size: 30px;
+  }
 
-button {
-  background: #27ae60;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
+  section {
+    max-width: 640px;
+    background: var(--surface);
+    padding: 24px;
+    margin: -20px auto 32px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
 
-#packageImage {
-  width: 100%;
-  max-width: 600px;
-  margin: 15px auto;
-  display: block;
-  border-radius: 10px;
-}
+  input, select, button {
+    width: 100%;
+    padding: 12px 14px;
+    margin: 8px 0;
+    font-size: 16px;
+    border-radius: 12px;
+  }
+
+  input, select {
+    border: 1px solid var(--border);
+    background: #f8fafc;
+    color: var(--ink);
+  }
+
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(28, 126, 214, 0.18);
+  }
+
+  button {
+    background: var(--accent);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+
+  button:hover {
+    background: var(--accent-dark);
+    transform: translateY(-1px);
+  }
+
+  #packageImage {
+    width: 100%;
+    max-width: 600px;
+    margin: 10px auto 18px;
+    display: block;
+    border-radius: 14px;
+    box-shadow: 0 12px 24px rgba(17, 24, 39, 0.15);
+  }
+
+  #result {
+    margin-top: 10px;
+    color: var(--muted);
+  }
 </style>
 </head>
 
