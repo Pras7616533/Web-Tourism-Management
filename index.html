@@ -96,6 +96,7 @@
       width: 100%;
       max-width: 980px;
       height: auto;
+      aspect-ratio: 16 / 9;
       display: block;
       margin: 0 auto;
       border-radius: 18px;
@@ -123,8 +124,10 @@
     .card img {
       width: 100%;
       height: 180px;
+      aspect-ratio: 16 / 10;
       object-fit: cover;
       border-radius: 12px;
+      background: #e7edf5;
     }
 
     .card h3 {
@@ -272,6 +275,17 @@
   </footer>
 
   <script>
+const fallbackImage = "images/banner.jpg";
+
+function applyImageFallback(img, fallbackSrc) {
+  img.addEventListener("error", () => {
+    if (img.dataset.fallbackApplied) {
+      return;
+    }
+    img.dataset.fallbackApplied = "true";
+    img.src = fallbackSrc;
+  });
+}
 const hotels = {
   Goa: ["Taj Goa", "Sea View Resort"],
   Manali: ["Snow Valley Hotel", "Mountain Inn"],
@@ -406,6 +420,10 @@ function goToNextPage() {
 function goToBooking(place) {
   window.location.href = "booking.html?package=" + encodeURIComponent(place);
 }
+
+document.querySelectorAll(".card img, .home-banner").forEach(img => {
+  applyImageFallback(img, fallbackImage);
+});
 
 </script>
 </body>

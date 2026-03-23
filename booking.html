@@ -93,10 +93,13 @@
   #packageImage {
     width: 100%;
     max-width: 600px;
+    aspect-ratio: 16 / 9;
     margin: 10px auto 18px;
     display: block;
     border-radius: 14px;
     box-shadow: 0 12px 24px rgba(17, 24, 39, 0.15);
+    background: #e7edf5;
+    object-fit: cover;
   }
 
   #result {
@@ -153,6 +156,8 @@ const images = {
   "New Zealand": "images/newzealand.jpg"
 };
 
+const fallbackImage = "images/banner.jpg";
+
 function goToBookingDetails(e) {
   e.preventDefault(); // Default form submit rok do
 
@@ -175,7 +180,11 @@ const selectedPackage = params.get("package");
 
 if(selectedPackage) {
 
-  document.getElementById("packageImage").src = images[selectedPackage];
+  const packageImage = document.getElementById("packageImage");
+  packageImage.src = images[selectedPackage];
+  packageImage.addEventListener("error", () => {
+    packageImage.src = fallbackImage;
+  });
 
   const hotelDropdown = document.getElementById("hotel");
 
